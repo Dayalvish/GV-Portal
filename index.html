@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GV Residency - Team Portal</title>
+    <title>GV Residency - Team Entry Portal</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f2f5; padding: 20px; }
         .sheet-container { background: white; border: 1px solid #ccc; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 700px; margin: auto; border-radius: 8px; overflow: hidden; }
@@ -20,14 +20,14 @@
         .status-tag { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
         .locked { background: #f8d7da; color: #721c24; }
         .unlocked { background: #d4edda; color: #155724; }
-        .draft-alert { background: #fff3cd; color: #856404; padding: 10px; text-align: center; font-size: 13px; display: none; }
+        .draft-alert { background: #fff3cd; color: #856404; padding: 10px; text-align: center; font-size: 13px; display: none; border-bottom: 1px solid #ffeeba; }
     </style>
 </head>
 <body>
 
     <h2 style="text-align: center;">GV Residency Team Portal</h2>
 
-    <div id="draftMessage" class="draft-alert">⚠️ Draft restored from your last session.</div>
+    <div id="draftMessage" class="draft-alert">⚠️ Draft restored from your previous session.</div>
 
     <form id="residencyForm">
         <div class="sheet-container">
@@ -106,16 +106,16 @@
                     </tr>
                     <tr>
                         <td class="label-cell">Paid Back To</td>
-                        <td><select name="PaidBackTo"><option>N/A</option><option>Arun</option><option>Senthil</option><option>Udhay</option></select></td>
+                        <td><select name="PaidBackTo"><option value="N/A">N/A</option><option>Arun</option><option>Senthil</option><option>Udhay</option></select></td>
                     </tr>
                     <tr>
                         <td class="label-cell">Income Received From</td>
-                        <td><select name="ReceivedFrom"><option>N/A</option><option>Arun</option><option>Senthil</option><option>Udhay</option></select></td>
+                        <td><select name="ReceivedFrom"><option value="N/A">N/A</option><option>Arun</option><option>Senthil</option><option>Udhay</option></select></td>
                     </tr>
                     <tr><td class="label-cell">Query Details</td><td><input type="text" name="Queries"></td></tr>
                     <tr>
                         <td class="label-cell">Income Received By</td>
-                        <td><select name="ReceivedBy"><option>N/A</option><option>Arun</option><option>Senthil</option><option>Udhay</option></select></td>
+                        <td><select name="ReceivedBy"><option value="N/A">N/A</option><option>Arun</option><option>Senthil</option><option>Udhay</option></select></td>
                     </tr>
                 </tbody>
             </table>
@@ -127,12 +127,16 @@
     </form>
 
     <script>
-        // Update this URL with your latest Apps Script Deployment URL
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbzeQMPgY2VX-SpOkVIC1x12mpM3wzumPtdFTF_XBjRYhj4RSbzdv9jWajrcZGn-pT6z/exec';
-        const passKey = 'YukTiKa@123';
+        /** * SECURITY & CONFIG DATA (OBFUSCATED)
+         * [0] = Password, [1] = Google Apps Script URL
+         */
+        var _0x92f1=["\x59\x75\x6b\x54\x69\x4b\x61\x40\x31\x32\x33","\x68\x74\x74\x70\x73\x3a\x2f\x2f\x73\x63\x72\x69\x70\x74\x2e\x67\x6f\x6f\x67\x6c\x65\x2e\x63\x6f\x6d\x2f\x6d\x61\x63\x72\x6f\x73\x2f\x73\x2f\x41\x4b\x66\x79\x63\x62\x7a\x65\x51\x4d\x50\x67\x59\x32\x56\x58\x2d\x53\x70\x4f\x6b\x56\x49\x43\x31\x78\x31\x32\x6d\x70\x4d\x33\x77\x7a\x75\x6d\x50\x74\x64\x46\x54\x46\x5f\x58\x42\x6a\x52\x59\x68\x6a\x34\x52\x53\x62\x7a\x64\x76\x39\x6a\x57\x61\x6a\x72\x63\x5a\x47\x6e\x2d\x70\x54\x36\x7a\x2f\x65\x78\x65\x63"];
+        const scriptURL = _0x92f1[1];
+        const passKey = _0x92f1[0];
+
         const form = document.getElementById('residencyForm');
 
-        // --- PASSWORD LOGIC ---
+        // --- PASSWORD CHECK ---
         document.getElementById('passInput').addEventListener('input', function() {
             const isMatch = this.value === passKey;
             document.getElementById('protectedContent').classList.toggle('hidden', !isMatch);
@@ -154,43 +158,43 @@
         }
 
         // --- AUTO-SAVE DRAFT LOGIC ---
-        form.addEventListener('input', () => {
+        form.addEventListener('change', () => {
             const formData = new FormData(form);
-            const data = {};
+            const obj = {};
             formData.forEach((value, key) => {
-                if(!data[key]) { data[key] = value; return; }
-                if(!Array.isArray(data[key])) { data[key] = [data[key]]; }
-                data[key].push(value);
+                if(!obj[key]) { obj[key] = value; return; }
+                if(!Array.isArray(obj[key])) { obj[key] = [obj[key]]; }
+                obj[key].push(value);
             });
-            localStorage.setItem('gvr_draft', JSON.stringify(data));
+            localStorage.setItem('gv_draft', JSON.stringify(obj));
         });
 
         window.onload = () => {
-            const saved = localStorage.getItem('gvr_draft');
-            if (saved) {
+            const saved = localStorage.getItem('gv_draft');
+            if(saved) {
                 const data = JSON.parse(saved);
-                Object.keys(data).forEach(key => {
-                    const input = form.elements[key];
-                    if (input) input.value = data[key];
-                });
+                for(let key in data) {
+                    let el = form.elements[key];
+                    if(el) el.value = data[key];
+                }
                 updateB7();
                 document.getElementById('draftMessage').style.display = 'block';
             }
         };
 
-        // --- SUBMISSION LOGIC ---
+        // --- SUBMIT TO GOOGLE SHEET ---
         form.onsubmit = function(e) {
             e.preventDefault();
             const btn = document.querySelector('.btn-submit');
-            btn.innerText = "Connecting to DB..."; btn.disabled = true;
-            
+            btn.innerText = "Saving to Database..."; btn.disabled = true;
+
             fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-            .then(response => {
-                alert("Success! Entry saved.");
-                localStorage.removeItem('gvr_draft'); // Clear draft on success
+            .then(() => {
+                alert("Success! The record has been added to the sheet.");
+                localStorage.removeItem('gv_draft');
                 resetForm();
             })
-            .catch(error => alert("Connection Error! Your data is still saved as a draft on this device."))
+            .catch(() => alert("Submission Failed. Check your network. Data is still saved as a draft on this device."))
             .finally(() => {
                 btn.innerText = "Submit Record";
                 btn.disabled = false;
@@ -200,14 +204,14 @@
         function resetForm() {
             form.reset();
             updateB7();
-            localStorage.removeItem('gvr_draft');
+            localStorage.removeItem('gv_draft');
             document.getElementById('protectedContent').classList.add('hidden');
             document.getElementById('formButtons').classList.add('hidden');
             document.getElementById('statusLabel').innerText = "Locked";
+            document.getElementById('statusLabel').className = "status-tag locked";
             document.getElementById('draftMessage').style.display = 'none';
             window.scrollTo(0, 0);
         }
     </script>
 </body>
-
 </html>
