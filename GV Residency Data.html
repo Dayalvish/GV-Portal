@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GV Residency - Team Portal</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f0f2f5; padding: 20px; }
+        .sheet-container { background: white; border: 1px solid #ccc; box-shadow: 0 2px 10px rgba(0,0,0,0.1); max-width: 700px; margin: auto; border-radius: 8px; overflow: hidden; }
+        table { border-collapse: collapse; width: 100%; }
+        td { border: 1px solid #dfe3e8; padding: 12px; font-size: 14px; }
+        .label-cell { background-color: #f8f9fa; font-weight: bold; width: 40%; color: #333; }
+        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; box-sizing: border-box; }
+        select[multiple] { height: 100px; background-color: #fff; }
+        .hidden { display: none; }
+        .button-group { padding: 20px; text-align: center; background: #f8f9fa; border-top: 1px solid #ddd; }
+        button { padding: 10px 25px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-submit { background-color: #28a745; color: white; }
+        .btn-reset { background-color: #007bff; color: white; }
+        .status-tag { padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .locked { background: #f8d7da; color: #721c24; }
+        .unlocked { background: #d4edda; color: #155724; }
+        .draft-alert { background: #fff3cd; color: #856404; padding: 10px; text-align: center; font-size: 13px; display: none; }
+    </style>
+</head>
+<body>
+
+    <h2 style="text-align: center;">GV Residency Team Portal</h2>
+
+    <div id="draftMessage" class="draft-alert">⚠️ Draft restored from your last session.</div>
+
+    <form id="residencyForm">
+        <div class="sheet-container">
+            <table>
+                <tr>
+                    <td class="label-cell">Name</td>
+                    <td>
+                        <select id="name" name="MemberName" required>
+                            <option value="">-- Select Member --</option>
+                            <option value="Arun">Arun</option><option value="Senthil">Senthil</option>
+                            <option value="Udhay">Udhay</option><option value="Saranya">Saranya</option>
+                            <option value="Jayanthi">Jayanthi</option><option value="Appa">Appa</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr><td class="label-cell">Date</td><td><input type="date" name="Date" required></td></tr>
+                <tr>
+                    <td class="label-cell" style="background-color: #fff3cd;">Password</td>
+                    <td><input type="password" id="passInput" placeholder="Enter password to unlock"></td>
+                </tr>
+                <tr><td class="label-cell">Status</td><td><span id="statusLabel" class="status-tag locked">Locked</span></td></tr>
+
+                <tbody id="protectedContent" class="hidden">
+                    <tr>
+                        <td class="label-cell">Entry Type</td>
+                        <td>
+                            <select id="B6" name="EntryType" onchange="updateB7()">
+                                <option value="">-- Select Type --</option>
+                                <option value="Expenses">Expenses</option>
+                                <option value="Income">Income</option>
+                                <option value="Adjustment">Adjustment</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Select Transaction</td>
+                        <td><select id="B7" name="Transaction"><option value="">Select Entry Type first</option></select></td>
+                    </tr>
+                    <tr><td class="label-cell">Date of Entry</td><td><input type="date" name="EntryDate"></td></tr>
+                    <tr><td class="label-cell">Amount</td><td><input type="number" name="Amount" placeholder="0.00"></td></tr>
+                    <tr>
+                        <td class="label-cell">Location</td>
+                        <td>
+                            <select name="SourceLocation">
+                                <option>Thavalam</option><option>Chinniampalayam</option><option>Odapatti</option><option>Others</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr><td class="label-cell">Remark</td><td><textarea name="Remark" rows="2"></textarea></td></tr>
+                    <tr>
+                        <td class="label-cell">Transaction By</td>
+                        <td>
+                            <select name="PaymentMethod">
+                                <option>Cash</option><option>UPI</option><option>Bank Transfer</option><option>Cheque</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">To be Shared (Multi)</td>
+                        <td>
+                            <select multiple name="SharedWith">
+                                <option>Arun</option><option>Senthil</option><option>Udhay</option>
+                                <option>Saranya</option><option>Jayanthi</option><option>Appa</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">To be Divided (Multi)</td>
+                        <td>
+                            <select multiple name="DividedAmong">
+                                <option>Arun</option><option>Senthil</option><option>Udhay</option>
+                                <option>Saranya</option><option>Jayanthi</option><option>Appa</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Paid Back To</td>
+                        <td><select name="PaidBackTo"><option>N/A</option><option>Arun</option><option>Senthil</option><option>Udhay</option></select></td>
+                    </tr>
+                    <tr>
+                        <td class="label-cell">Income Received From</td>
+                        <td><select name="ReceivedFrom"><option>N/A</option><option>Arun</option><option>Senthil</option><option>Udhay</option></select></td>
+                    </tr>
+                    <tr><td class="label-cell">Query Details</td><td><input type="text" name="Queries"></td></tr>
+                    <tr>
+                        <td class="label-cell">Income Received By</td>
+                        <td><select name="ReceivedBy"><option>N/A</option><option>Arun</option><option>Senthil</option><option>Udhay</option></select></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="button-group hidden" id="formButtons">
+                <button type="submit" class="btn-submit">Submit Record</button>
+                <button type="button" class="btn-reset" onclick="resetForm()">Fill Another</button>
+            </div>
+        </div>
+    </form>
+
+    <script>
+        // Update this URL with your latest Apps Script Deployment URL
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzeQMPgY2VX-SpOkVIC1x12mpM3wzumPtdFTF_XBjRYhj4RSbzdv9jWajrcZGn-pT6z/exec';
+        const passKey = 'YukTiKa@123';
+        const form = document.getElementById('residencyForm');
+
+        // --- PASSWORD LOGIC ---
+        document.getElementById('passInput').addEventListener('input', function() {
+            const isMatch = this.value === passKey;
+            document.getElementById('protectedContent').classList.toggle('hidden', !isMatch);
+            document.getElementById('formButtons').classList.toggle('hidden', !isMatch);
+            document.getElementById('statusLabel').innerText = isMatch ? "Unlocked" : "Locked";
+            document.getElementById('statusLabel').className = "status-tag " + (isMatch ? "unlocked" : "locked");
+        });
+
+        const criteria = {
+            "Expenses": ["House Maintenance", "Labour Charges", "Agri-Materials", "Transportation", "EB-Bill", "Advance-Refund", "Others"],
+            "Income": ["Rent", "Agri-Product", "House Advance", "Loan"],
+            "Adjustment": ["Paying Back", "Divided Between"]
+        };
+
+        function updateB7() {
+            const b6 = document.getElementById('B6').value;
+            const b7 = document.getElementById('B7');
+            b7.innerHTML = criteria[b6] ? criteria[b6].map(i => `<option value="${i}">${i}</option>`).join('') : '<option>Select Type first</option>';
+        }
+
+        // --- AUTO-SAVE DRAFT LOGIC ---
+        form.addEventListener('input', () => {
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => {
+                if(!data[key]) { data[key] = value; return; }
+                if(!Array.isArray(data[key])) { data[key] = [data[key]]; }
+                data[key].push(value);
+            });
+            localStorage.setItem('gvr_draft', JSON.stringify(data));
+        });
+
+        window.onload = () => {
+            const saved = localStorage.getItem('gvr_draft');
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.keys(data).forEach(key => {
+                    const input = form.elements[key];
+                    if (input) input.value = data[key];
+                });
+                updateB7();
+                document.getElementById('draftMessage').style.display = 'block';
+            }
+        };
+
+        // --- SUBMISSION LOGIC ---
+        form.onsubmit = function(e) {
+            e.preventDefault();
+            const btn = document.querySelector('.btn-submit');
+            btn.innerText = "Connecting to DB..."; btn.disabled = true;
+            
+            fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+                alert("Success! Entry saved.");
+                localStorage.removeItem('gvr_draft'); // Clear draft on success
+                resetForm();
+            })
+            .catch(error => alert("Connection Error! Your data is still saved as a draft on this device."))
+            .finally(() => {
+                btn.innerText = "Submit Record";
+                btn.disabled = false;
+            });
+        };
+
+        function resetForm() {
+            form.reset();
+            updateB7();
+            localStorage.removeItem('gvr_draft');
+            document.getElementById('protectedContent').classList.add('hidden');
+            document.getElementById('formButtons').classList.add('hidden');
+            document.getElementById('statusLabel').innerText = "Locked";
+            document.getElementById('draftMessage').style.display = 'none';
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>
